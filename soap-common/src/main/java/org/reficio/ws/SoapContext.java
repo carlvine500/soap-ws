@@ -78,11 +78,6 @@ public class SoapContext {
      * Constructor mainly for SpringFramework purposes, in any other case use the fluent builder interface;
      * #see builder() method
      *
-     * @param exampleContent
-     * @param typeComments
-     * @param valueComments
-     * @param buildOptional
-     * @param alwaysBuildHeaders
      */
     public SoapContext(boolean exampleContent, boolean typeComments, boolean valueComments,
                        boolean buildOptional, boolean alwaysBuildHeaders) {
@@ -197,7 +192,6 @@ public class SoapContext {
          * By default the XML-Schema root element is added since it is quite common in .NET
          * services and generates a sample xml fragment of about 300 kb!.
          *
-         * @param excludedTypes
          * @return builder
          */
         public ContextBuilder excludedTypes(Set<QName> excludedTypes) {

@@ -146,8 +146,6 @@ public final class SoapServer {
 
     /**
      * Registers responder under specified context path. Only one responder may be registered under one context path.
-     *
-     * @param contextPath
      * @param responder
      * @throws ServiceRegistrationException thrown if a registration error occurs - for example duplicate responder registered
      */
@@ -161,8 +159,7 @@ public final class SoapServer {
 
     /**
      * Unregisters responder from the specified context path
-     *
-     * @param contextPath
+     * @param contextPath xxx
      * @throws ServiceRegistrationException thrown if an unregistration error occurs - for example no responder registerd
      */
     public void unregisterRequestResponder(String contextPath) throws ServiceRegistrationException {

@@ -48,7 +48,7 @@
             <artifactId>xercesImpl</artifactId>
             <version>2.10.0</version>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>xmlbeans</groupId>
             <artifactId>xbean</artifactId>
             <version>fixed-2.4.0</version>
@@ -56,6 +56,11 @@
         <dependency>
             <groupId>xmlbeans</groupId>
             <artifactId>xbean_xpath</artifactId>
+            <version>2.4.0</version>
+        </dependency>-->
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
             <version>2.4.0</version>
         </dependency>
         <dependency>

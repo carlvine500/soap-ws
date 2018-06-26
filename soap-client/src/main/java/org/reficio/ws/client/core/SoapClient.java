@@ -122,7 +122,7 @@ public final class SoapClient {
      * Disconnects from the SOAP server
      * Underlying connection is a persistent connection by default:
      *
-     * @link http://docs.oracle.com/javase/1.5.0/docs/guide/net/http-keepalive.html
+     * refer: http://docs.oracle.com/javase/1.5.0/docs/guide/net/http-keepalive.html
      */
     public void disconnect() {
         if (client != null) {

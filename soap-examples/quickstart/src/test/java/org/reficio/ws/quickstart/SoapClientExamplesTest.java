@@ -28,6 +28,7 @@ import org.reficio.ws.builder.SoapOperation;
 import org.reficio.ws.builder.core.Wsdl;
 import org.reficio.ws.client.core.SoapClient;
 import org.reficio.ws.common.ResourceUtils;
+import org.reficio.ws.server.ServiceRegistrationException;
 import org.reficio.ws.server.core.SoapServer;
 import org.reficio.ws.server.responder.AutoResponder;
 import org.xml.sax.SAXException;
