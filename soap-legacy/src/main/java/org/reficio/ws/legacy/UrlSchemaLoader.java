@@ -44,7 +44,7 @@ import java.net.URL;
  * - removal of dependencies and code parts that are out of scope of SOAP message generation
  * - minor fixes to make the class compile out of soapUI's code base
  */
-class UrlSchemaLoader implements SchemaLoader, DefinitionLoader {
+public class UrlSchemaLoader implements SchemaLoader, DefinitionLoader {
     private String baseURI;
 
     public UrlSchemaLoader(String baseURI) {

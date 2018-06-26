@@ -57,7 +57,7 @@ import java.util.*;
  *
  * @author Ole.Matzura
  */
-class SchemaUtils {
+public class SchemaUtils {
     private final static Logger log = Logger.getLogger(SchemaUtils.class);
     private static Map<String, XmlObject> defaultSchemas = new HashMap<String, XmlObject>();
 
