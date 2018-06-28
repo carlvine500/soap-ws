@@ -385,7 +385,7 @@
         </extensions>
     </build>
 
-    <repositories>
+    <!--<repositories>
         <repository>
             <id>reficio</id>
             <url>http://repo.reficio.org/maven/</url>
@@ -403,7 +403,7 @@
             <url>http://svn.apache.org/repos/asf/servicemix/m2-repo/</url>
         </repository>
 
-    </repositories>
+    </repositories>-->
 
     <profiles>
         <!--<profile>

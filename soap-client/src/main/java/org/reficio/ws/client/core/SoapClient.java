@@ -26,6 +26,7 @@ import org.apache.http.auth.Credentials;
 import org.apache.http.auth.NTCredentials;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.params.ClientPNames;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.params.ConnRoutePNames;
 import org.apache.http.conn.routing.HttpRoute;
@@ -36,7 +37,9 @@ import org.apache.http.conn.scheme.SchemeLayeredSocketFactory;
 import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.PoolingClientConnectionManager;
 import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.HttpContext;
@@ -193,8 +196,27 @@ public final class SoapClient {
         configureProxy();
     }
 
+    private static PoolingClientConnectionManager conMgr = null;
+
+    static {
+        HttpParams params = new BasicHttpParams();
+        Integer CONNECTION_TIMEOUT = 5 * 1000; //设置请求超时2秒钟 根据业务调整
+        Integer SO_TIMEOUT = 2 * 1000; //设置等待数据超时时间2秒钟 根据业务调整
+        Long CONN_MANAGER_TIMEOUT = 500L; //该值就是连接不够用的时候等待超时时间，一定要设置，而且不能太大
+
+        params.setIntParameter(CoreConnectionPNames.CONNECTION_TIMEOUT, CONNECTION_TIMEOUT);
+        params.setIntParameter(CoreConnectionPNames.SO_TIMEOUT, SO_TIMEOUT);
+        params.setLongParameter(ClientPNames.CONN_MANAGER_TIMEOUT, CONN_MANAGER_TIMEOUT);
+        params.setBooleanParameter(CoreConnectionPNames.STALE_CONNECTION_CHECK, true);
+
+        conMgr = new PoolingClientConnectionManager();
+        conMgr.setMaxTotal(2000);
+
+        conMgr.setDefaultMaxPerRoute(conMgr.getMaxTotal());
+    }
+
     private void configureClient() {
-        client = new DefaultHttpClient();
+        client = new DefaultHttpClient(conMgr);
         HttpParams httpParameters = new BasicHttpParams();
         HttpConnectionParams.setConnectionTimeout(httpParameters, connectTimeoutInMillis);
         HttpConnectionParams.setSoTimeout(httpParameters, readTimeoutInMillis);

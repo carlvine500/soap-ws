@@ -64,7 +64,7 @@ import java.util.Map;
  * @author Ole.Matzura
  */
 @SuppressWarnings("unchecked")
-class WsdlUtils {
+public class WsdlUtils {
     private final static Logger log = Logger.getLogger(WsdlUtils.class);
 
     public static <T extends ExtensibilityElement> T getExtensiblityElement(List<?> list, Class<T> clazz) {

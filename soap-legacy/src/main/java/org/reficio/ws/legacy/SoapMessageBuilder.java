@@ -452,6 +452,8 @@ class SoapMessageBuilder {
 
             if (definitionWrapper.hasSchemaTypes()) {
                 SchemaGlobalElement elm = definitionWrapper.getSchemaTypeLoader().findElement(elementName);
+//                QName priority = new QName("http://dummy.net/types/type_MessageHeader.xsd", "priority");
+//                definitionWrapper.getSchemaTypeLoader().findElement(new QName("http://dummy.net/types/type_MessageHeader.xsd", "priority"));
                 if (elm != null) {
                     cursor.toFirstChild();
                     xmlGenerator.createSampleForType(elm.getType(), cursor);
