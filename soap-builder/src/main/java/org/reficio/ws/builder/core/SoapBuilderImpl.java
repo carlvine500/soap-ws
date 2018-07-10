@@ -108,9 +108,23 @@ class SoapBuilderImpl implements SoapBuilder {
     }
 
     @Override
+    public String buildInputMessage1(SoapOperation operation) {
+        return buildInputMessage1(operation, context);
+    }
+
+    @Override
     public String buildInputMessage(SoapOperation operation, SoapContext context) {
         try {
             return soapFacade.buildSoapMessageFromInput(binding, getBindingOperation(operation), context);
+        } catch (Exception e) {
+            throw new SoapBuilderException(e);
+        }
+    }
+
+    //@Override
+    public String buildInputMessage1(SoapOperation operation, SoapContext context) {
+        try {
+            return soapFacade.buildSoapMessageFromInput1(binding, getBindingOperation(operation), context);
         } catch (Exception e) {
             throw new SoapBuilderException(e);
         }
@@ -122,9 +136,22 @@ class SoapBuilderImpl implements SoapBuilder {
     }
 
     @Override
+    public String buildOutputMessage1(SoapOperation operation) {
+        return buildOutputMessage1(operation, context);
+    }
+
+    @Override
     public String buildOutputMessage(SoapOperation operation, SoapContext context) {
         try {
             return soapFacade.buildSoapMessageFromOutput(binding, getBindingOperation(operation), context);
+        } catch (Exception e) {
+            throw new SoapBuilderException(e);
+        }
+    }
+
+    public String buildOutputMessage1(SoapOperation operation, SoapContext context) {
+        try {
+            return soapFacade.buildSoapMessageFromOutput1(binding, getBindingOperation(operation), context);
         } catch (Exception e) {
             throw new SoapBuilderException(e);
         }

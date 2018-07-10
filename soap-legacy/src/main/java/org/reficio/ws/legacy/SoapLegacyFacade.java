@@ -55,9 +55,25 @@ public class SoapLegacyFacade {
         }
     }
 
+    public String buildSoapMessageFromInput1(Binding binding, BindingOperation bindingOperation, SoapContext context) {
+        try {
+            return messageBuilder.buildSoapMessageFromInput1(binding, bindingOperation, context);
+        } catch (Exception e) {
+            throw new SoapBuilderException(e);
+        }
+    }
+
     public String buildSoapMessageFromOutput(Binding binding, BindingOperation bindingOperation, SoapContext context) {
         try {
             return messageBuilder.buildSoapMessageFromOutput(binding, bindingOperation, context);
+        } catch (Exception e) {
+            throw new SoapBuilderException(e);
+        }
+    }
+
+    public String buildSoapMessageFromOutput1(Binding binding, BindingOperation bindingOperation, SoapContext context) {
+        try {
+            return messageBuilder.buildSoapMessageFromOutput1(binding, bindingOperation, context);
         } catch (Exception e) {
             throw new SoapBuilderException(e);
         }

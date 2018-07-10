@@ -39,10 +39,12 @@ public interface SoapBuilder {
     SoapOperationBuilder getOperationBuilder(SoapOperation operation);
 
     String buildInputMessage(SoapOperation operation);
+    String buildInputMessage1(SoapOperation operation);
 
     String buildInputMessage(SoapOperation operation, SoapContext context);
 
     String buildOutputMessage(SoapOperation operation);
+    String buildOutputMessage1(SoapOperation operation);
 
     String buildOutputMessage(SoapOperation operation, SoapContext context);
 
