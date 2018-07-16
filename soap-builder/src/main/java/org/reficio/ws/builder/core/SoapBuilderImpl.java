@@ -112,6 +112,16 @@ class SoapBuilderImpl implements SoapBuilder {
         return buildInputMessage1(operation, context);
     }
 
+//    @Override
+    public String buildInputMessage2(SoapOperation operation,String xml) {
+        return buildInputMessage2(operation, context,xml);
+    }
+
+    @Override
+    public String json2Xml(SoapOperation operation,String json) {
+        return json2Xml(operation, context,json);
+    }
+
     @Override
     public String buildInputMessage(SoapOperation operation, SoapContext context) {
         try {
@@ -125,6 +135,22 @@ class SoapBuilderImpl implements SoapBuilder {
     public String buildInputMessage1(SoapOperation operation, SoapContext context) {
         try {
             return soapFacade.buildSoapMessageFromInput1(binding, getBindingOperation(operation), context);
+        } catch (Exception e) {
+            throw new SoapBuilderException(e);
+        }
+    }
+
+    public String buildInputMessage2(SoapOperation operation, SoapContext context,String xml) {
+        try {
+            return soapFacade.buildSoapMessageFromInput2(binding, getBindingOperation(operation), context,xml);
+        } catch (Exception e) {
+            throw new SoapBuilderException(e);
+        }
+    }
+
+    public String json2Xml(SoapOperation operation, SoapContext context,String json) {
+        try {
+            return soapFacade.json2Xml(binding, getBindingOperation(operation), context,json);
         } catch (Exception e) {
             throw new SoapBuilderException(e);
         }

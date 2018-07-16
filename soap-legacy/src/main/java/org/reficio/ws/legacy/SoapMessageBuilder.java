@@ -24,19 +24,26 @@ import com.alibaba.fastjson.JSONObject;
 import com.ibm.wsdl.xml.WSDLReaderImpl;
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.*;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
+import org.dom4j.Namespace;
 import org.reficio.ws.SoapBuilderException;
 import org.reficio.ws.SoapContext;
 import org.reficio.ws.annotation.ThreadSafe;
 import org.reficio.ws.common.Wsdl11Writer;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.xml.sax.InputSource;
 
 import javax.wsdl.*;
 import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap12.SOAP12Binding;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.File;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -329,6 +336,125 @@ class SoapMessageBuilder {
 //        }
     }
 
+    public String buildSoapMessageFromInput2(Binding binding, BindingOperation bindingOperation, SoapContext context,String xml) throws Exception {
+        SoapVersion soapVersion = getSoapVersion(binding);
+        boolean inputSoapEncoded = WsdlUtils.isInputSoapEncoded(bindingOperation);
+        SampleJson2Util xmlGenerator = new SampleJson2Util(inputSoapEncoded, context);
+
+        JSONObject envelopeWrapper = new JSONObject();
+        JSONObject envelope = new JSONObject();
+        envelopeWrapper.put(soapVersion.getEnvelopeQName().getLocalPart(),envelope);
+
+        XmlObject object = XmlObject.Factory.newInstance();
+        XmlCursor cursor = object.newCursor();
+
+//        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+//        DocumentBuilder builder = factory.newDocumentBuilder();
+//        org.w3c.dom.Document xmlNode = builder.parse(new InputSource(new StringReader(xml)));
+        org.dom4j.Document doc = DocumentHelper.parseText(xml);
+
+        cursor.toNextToken();
+        cursor.beginElement(soapVersion.getEnvelopeQName());
+
+
+        if (inputSoapEncoded) {
+            cursor.insertNamespace("xsi", Constants.XSI_NS);
+            cursor.insertNamespace("xsd", Constants.XSD_NS);
+        }
+
+        cursor.toFirstChild();
+        cursor.beginElement(soapVersion.getBodyQName());
+        cursor.toFirstChild();
+
+        JSONObject body = new JSONObject();
+        envelope.put(soapVersion.getBodyQName().getLocalPart(),body);
+
+        Element envelopeElement = doc.getRootElement();
+        Element bodyElement = envelopeElement.element(soapVersion.getBodyQName().getLocalPart());
+
+        if (WsdlUtils.isRpc(definition, bindingOperation)) {
+//            buildRpcRequest(bindingOperation, soapVersion, cursor, xmlGenerator);
+        } else {
+            buildDocumentRequest2(bindingOperation, cursor, xmlGenerator, body,bodyElement);
+        }
+
+        if (context.isAlwaysBuildHeaders()) {
+            BindingInput bindingInput = bindingOperation.getBindingInput();
+            if (bindingInput != null) {
+                List<?> extensibilityElements = bindingInput.getExtensibilityElements();
+                List<WsdlUtils.SoapHeader> soapHeaders = WsdlUtils.getSoapHeaders(extensibilityElements);
+//                JSONObject header = new JSONObject();
+//                envelope.put(soapVersion.getBodyQName().getLocalPart(),header);
+
+                addHeaders2(soapHeaders, soapVersion, cursor, xmlGenerator,envelope,envelopeElement);
+            }
+        }
+        cursor.dispose();
+        return envelopeWrapper.toJSONString();
+//        try {
+//            StringWriter writer = new StringWriter();
+//            XmlUtils.serializePretty(object, writer);
+//            return writer.toString();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return object.xmlText();
+//        }
+    }
+
+    public String json2Xml(Binding binding, BindingOperation bindingOperation, SoapContext context,String json) throws Exception {
+        SoapVersion soapVersion = getSoapVersion(binding);
+        boolean inputSoapEncoded = WsdlUtils.isInputSoapEncoded(bindingOperation);
+        SampleJsonXmlUtil xmlGenerator = new SampleJsonXmlUtil(inputSoapEncoded, context);
+
+        JSONObject envelopeWrapper = JSON.parseObject(json);
+//        JSONObject envelopeWrapper = new JSONObject();
+//        JSONObject envelope = new JSONObject();
+        JSONObject envelope = (JSONObject)envelopeWrapper.get(soapVersion.getEnvelopeQName().getLocalPart());
+
+        XmlObject object = XmlObject.Factory.newInstance();
+        XmlCursor cursor = object.newCursor();
+
+        cursor.toNextToken();
+        cursor.beginElement(soapVersion.getEnvelopeQName());
+
+
+        if (inputSoapEncoded) {
+            cursor.insertNamespace("xsi", Constants.XSI_NS);
+            cursor.insertNamespace("xsd", Constants.XSD_NS);
+        }
+
+        cursor.toFirstChild();
+        cursor.beginElement(soapVersion.getBodyQName());
+        cursor.toFirstChild();
+        JSONObject body = (JSONObject)envelope.get(soapVersion.getBodyQName().getLocalPart());
+
+        if (WsdlUtils.isRpc(definition, bindingOperation)) {
+//            buildRpcRequest(bindingOperation, soapVersion, cursor, xmlGenerator);
+        } else {
+            buildDocumentRequestJson2Xml(bindingOperation, cursor, xmlGenerator, body);
+        }
+
+        if (context.isAlwaysBuildHeaders()) {
+            BindingInput bindingInput = bindingOperation.getBindingInput();
+            if (bindingInput != null) {
+                List<?> extensibilityElements = bindingInput.getExtensibilityElements();
+                List<WsdlUtils.SoapHeader> soapHeaders = WsdlUtils.getSoapHeaders(extensibilityElements);
+//                JSONObject header = new JSONObject();
+//                envelope.put(soapVersion.getBodyQName().getLocalPart(),header);
+                addHeadersJson2Xml(soapHeaders, soapVersion, cursor, xmlGenerator,envelope);
+            }
+        }
+        cursor.dispose();
+        try {
+            StringWriter writer = new StringWriter();
+            XmlUtils.serializePretty(object, writer);
+            return writer.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return object.xmlText();
+        }
+    }
+
     // ----------------------------------------------------------
     // OUTPUT MESSAGE GENERATORS
     // ----------------------------------------------------------
@@ -553,6 +679,68 @@ class SoapMessageBuilder {
         }
     }
 
+    private void addHeaders2(List<WsdlUtils.SoapHeader> headers, SoapVersion soapVersion, XmlCursor cursor, SampleJson2Util xmlGenerator,JSONObject envelope,Element node) throws Exception {
+        // reposition
+        cursor.toStartDoc();
+
+        cursor.toChild(soapVersion.getEnvelopeQName());
+        cursor.toFirstChild();
+
+        JSONObject headerJsonObject = new JSONObject();
+        envelope.put(soapVersion.getHeaderQName().getLocalPart(), headerJsonObject);
+//        Node headerNode = SampleJson2Util.getChildNodeByName(node,soapVersion.getHeaderQName().getLocalPart());
+        cursor.beginElement(soapVersion.getHeaderQName());
+        cursor.toFirstChild();
+        Element headerNode = node.element(soapVersion.getHeaderQName().getLocalPart());
+
+        for (int i = 0; i < headers.size(); i++) {
+            WsdlUtils.SoapHeader header = headers.get(i);
+
+            Message message = definition.getMessage(header.getMessage());
+            if (message == null) {
+                log.error("Missing message for header: " + header.getMessage());
+                continue;
+            }
+
+            Part part = message.getPart(header.getPart());
+
+            if (part != null)
+                createElementForPart2(part, cursor, xmlGenerator,headerJsonObject,headerNode);
+            else
+                log.error("Missing part for header; " + header.getPart());
+        }
+    }
+
+    private void addHeadersJson2Xml(List<WsdlUtils.SoapHeader> headers, SoapVersion soapVersion, XmlCursor cursor, SampleJsonXmlUtil xmlGenerator,JSONObject envelope) throws Exception {
+        // reposition
+        cursor.toStartDoc();
+
+        cursor.toChild(soapVersion.getEnvelopeQName());
+        cursor.toFirstChild();
+
+        JSONObject headerJsonObject = new JSONObject();
+        envelope.put(soapVersion.getHeaderQName().getLocalPart(), headerJsonObject);
+        cursor.beginElement(soapVersion.getHeaderQName());
+        cursor.toFirstChild();
+
+        for (int i = 0; i < headers.size(); i++) {
+            WsdlUtils.SoapHeader header = headers.get(i);
+
+            Message message = definition.getMessage(header.getMessage());
+            if (message == null) {
+                log.error("Missing message for header: " + header.getMessage());
+                continue;
+            }
+
+            Part part = message.getPart(header.getPart());
+
+            if (part != null)
+                createElementForPartJson2Xml(part, cursor, xmlGenerator,headerJsonObject);
+            else
+                log.error("Missing part for header; " + header.getPart());
+        }
+    }
+
     private void buildDocumentResponse(BindingOperation bindingOperation, XmlCursor cursor, SampleXmlUtil xmlGenerator)
             throws Exception {
         Part[] parts = WsdlUtils.getOutputParts(bindingOperation);
@@ -614,6 +802,38 @@ class SoapMessageBuilder {
                 XmlCursor c = cursor.newCursor();
                 c.toLastChild();
                 createElementForPart1(part, c, xmlGenerator,body);
+                c.dispose();
+            }
+        }
+    }
+
+    private void buildDocumentRequest2(BindingOperation bindingOperation, XmlCursor cursor, SampleJson2Util xmlGenerator,JSONObject body,Element node)
+            throws Exception {
+        Part[] parts = WsdlUtils.getInputParts(bindingOperation);
+
+        for (int i = 0; i < parts.length; i++) {
+            Part part = parts[i];
+            if (!WsdlUtils.isAttachmentInputPart(part, bindingOperation)
+                    && (part.getElementName() != null || part.getTypeName() != null)) {
+                XmlCursor c = cursor.newCursor();
+                c.toLastChild();
+                createElementForPart2(part, c, xmlGenerator,body,node);
+                c.dispose();
+            }
+        }
+    }
+
+    private void buildDocumentRequestJson2Xml(BindingOperation bindingOperation, XmlCursor cursor, SampleJsonXmlUtil xmlGenerator,JSONObject body)
+            throws Exception {
+        Part[] parts = WsdlUtils.getInputParts(bindingOperation);
+
+        for (int i = 0; i < parts.length; i++) {
+            Part part = parts[i];
+            if (!WsdlUtils.isAttachmentInputPart(part, bindingOperation)
+                    && (part.getElementName() != null || part.getTypeName() != null)) {
+                XmlCursor c = cursor.newCursor();
+                c.toLastChild();
+                createElementForPartJson2Xml(part, c, xmlGenerator,body);
                 c.dispose();
             }
         }
@@ -689,6 +909,89 @@ class SoapMessageBuilder {
             // cursor.beginElement( new QName(
             // wsdlContext.getWsdlDefinition().getTargetNamespace(), part.getName()
             // ));
+            cursor.beginElement(part.getName());
+            if (typeName != null && definitionWrapper.hasSchemaTypes()) {
+                SchemaType type = definitionWrapper.getSchemaTypeLoader().findType(typeName);
+
+                if (type != null) {
+                    cursor.toFirstChild();
+                    xmlGenerator.createSampleForType(type, cursor,typeElement);
+                } else
+                    log.error("Could not find type [" + typeName + "] specified in part [" + part.getName() + "]");
+            }
+
+            cursor.toParent();
+        }
+    }
+
+    private void createElementForPart2(Part part, XmlCursor cursor, SampleJson2Util xmlGenerator,JSONObject body,Element node) throws Exception {
+        QName elementName = part.getElementName();
+        QName typeName = part.getTypeName();
+        JSON typeElement = new JSONObject();
+
+        if (elementName != null) {
+            cursor.beginElement(elementName);
+
+            if (definitionWrapper.hasSchemaTypes()) {
+                SchemaGlobalElement elm = definitionWrapper.getSchemaTypeLoader().findElement(elementName);
+                Element element = node.element(SampleJson2Util.getDom4jQname(elementName));
+//                QName priority = new QName("http://dummy.net/types/type_MessageHeader.xsd", "priority");
+//                definitionWrapper.getSchemaTypeLoader().findElement(new QName("http://dummy.net/types/type_MessageHeader.xsd", "priority"));
+                if (elm != null) {
+                    cursor.toFirstChild();
+                    SchemaParticle contentModel = elm.getType().getContentModel();
+//                    if (contentModel != null && contentModel.getIntMaxOccurs() > 1) {
+//                        typeElement = new JSONArray();
+//                    }
+//                    if (intMaxOccurs > 0) {
+//                        JSONArray typeElement = new JSONObject();
+//                        body.put(elementName.getLocalPart(),typeElement);
+//                    }
+                    xmlGenerator.createSampleForType(elm.getType(), cursor,typeElement, element);
+                } else
+                    log.error("Could not find element [" + elementName + "] specified in part [" + part.getName() + "]");
+            }
+            body.put(elementName.getLocalPart(),typeElement);
+            cursor.toParent();
+        } else {
+            // cursor.beginElement( new QName(
+            // wsdlContext.getWsdlDefinition().getTargetNamespace(), part.getName()
+            // ));
+            cursor.beginElement(part.getName());
+            if (typeName != null && definitionWrapper.hasSchemaTypes()) {
+                SchemaType type = definitionWrapper.getSchemaTypeLoader().findType(typeName);
+
+                if (type != null) {
+                    cursor.toFirstChild();
+                    xmlGenerator.createSampleForType(type, cursor,typeElement,node);
+                } else
+                    log.error("Could not find type [" + typeName + "] specified in part [" + part.getName() + "]");
+            }
+
+            cursor.toParent();
+        }
+    }
+
+    private void createElementForPartJson2Xml(Part part, XmlCursor cursor, SampleJsonXmlUtil xmlGenerator,JSONObject body) throws Exception {
+        QName elementName = part.getElementName();
+        QName typeName = part.getTypeName();
+        JSON typeElement = (JSON)body.get(elementName.getLocalPart());
+
+        if (elementName != null) {
+            cursor.beginElement(elementName);
+
+            if (definitionWrapper.hasSchemaTypes()) {
+                SchemaGlobalElement elm = definitionWrapper.getSchemaTypeLoader().findElement(elementName);
+                if (elm != null) {
+                    cursor.toFirstChild();
+                    SchemaParticle contentModel = elm.getType().getContentModel();
+                    xmlGenerator.createSampleForType(elm.getType(), cursor,typeElement);
+                } else
+                    log.error("Could not find element [" + elementName + "] specified in part [" + part.getName() + "]");
+            }
+//            body.put(elementName.getLocalPart(),typeElement);
+            cursor.toParent();
+        } else {
             cursor.beginElement(part.getName());
             if (typeName != null && definitionWrapper.hasSchemaTypes()) {
                 SchemaType type = definitionWrapper.getSchemaTypeLoader().findType(typeName);

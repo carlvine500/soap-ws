@@ -1,0 +1,31 @@
+{
+  "Envelope": {
+    "Header": {},
+    "Body": {
+      "getCat": {
+        "arg0": {
+          "foots1": {
+            "name": {
+              "string": "verrantque per auras"
+            }
+          },
+          "foots": {
+            "entry": {
+              "value": {
+                "name": {
+                  "string": "quae divum incedo"
+                }
+              },
+              "key": {
+                "string": "sonoras imperio"
+              }
+            }
+          },
+          "name": {
+            "string": "gero et"
+          }
+        }
+      }
+    }
+  }
+}

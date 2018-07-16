@@ -40,6 +40,8 @@ public interface SoapBuilder {
 
     String buildInputMessage(SoapOperation operation);
     String buildInputMessage1(SoapOperation operation);
+    String buildInputMessage2(SoapOperation operation,String xml);
+    String json2Xml(SoapOperation operation,String json);
 
     String buildInputMessage(SoapOperation operation, SoapContext context);
 
