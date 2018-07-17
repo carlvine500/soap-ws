@@ -1,0 +1,92 @@
+<xs:schema targetNamespace="http://quickstart.ws.reficio.org/" version="1.0" xmlns:tns="http://quickstart.ws.reficio.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+<xs:element name="echo" type="tns:echo"/>
+
+<xs:element name="echoResponse" type="tns:echoResponse"/>
+
+<xs:element name="getCat" type="tns:getCat"/>
+
+<xs:element name="getCatResponse" type="tns:getCatResponse"/>
+
+<xs:element name="getList" type="tns:getList"/>
+
+<xs:element name="getListResponse" type="tns:getListResponse"/>
+
+<xs:complexType name="echo">
+<xs:sequence>
+<xs:element minOccurs="0" name="arg0" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="echoResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="return" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getCat">
+<xs:sequence>
+<xs:element minOccurs="0" name="arg0" type="tns:cat"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="cat">
+<xs:sequence>
+<xs:element minOccurs="0" name="catName" type="xs:string"/>
+<xs:element name="footMap">
+<xs:complexType>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="entry">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="key" type="xs:string"/>
+<xs:element minOccurs="0" name="value" type="tns:foot"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="footsList" nillable="true" type="tns:foot"/>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="stringList" nillable="true" type="xs:string"/>
+<xs:element name="stringMap">
+<xs:complexType>
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="entry">
+<xs:complexType>
+<xs:sequence>
+<xs:element minOccurs="0" name="key" type="xs:string"/>
+<xs:element minOccurs="0" name="value" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="foot">
+<xs:sequence>
+<xs:element minOccurs="0" name="footName" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getCatResponse">
+<xs:sequence>
+<xs:element minOccurs="0" name="return" type="tns:cat"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getList">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="arg0" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="getListResponse">
+<xs:sequence>
+<xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="xs:string"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
