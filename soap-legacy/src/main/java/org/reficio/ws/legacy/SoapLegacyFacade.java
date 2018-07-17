@@ -176,4 +176,7 @@ public class SoapLegacyFacade {
         return WsdlUtils.isInputSoapEncoded(operation);
     }
 
+    public SoapMessageBuilder getMessageBuilder() {
+        return messageBuilder;
+    }
 }

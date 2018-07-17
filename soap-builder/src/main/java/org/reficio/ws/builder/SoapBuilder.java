@@ -19,6 +19,7 @@
 package org.reficio.ws.builder;
 
 import org.reficio.ws.SoapContext;
+import org.reficio.ws.legacy.SoapLegacyFacade;
 
 import javax.wsdl.Binding;
 import javax.xml.namespace.QName;
@@ -77,5 +78,7 @@ public interface SoapBuilder {
     boolean isInputSoapEncoded(SoapOperation operation);
 
     boolean isOutputSoapEncoded(SoapOperation operation);
+
+    SoapLegacyFacade getSoapFacade();
 
 }

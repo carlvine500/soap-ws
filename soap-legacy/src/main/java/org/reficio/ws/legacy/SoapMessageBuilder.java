@@ -75,7 +75,7 @@ import java.util.List;
  */
 @ThreadSafe
 @SuppressWarnings("unchecked")
-class SoapMessageBuilder {
+public class SoapMessageBuilder {
 
     private final static Logger log = Logger.getLogger(SoapMessageBuilder.class);
 
