@@ -190,6 +190,10 @@ class SampleXmlUtil {
     }
 
     private String sampleDataForSimpleType(SchemaType sType) {
+        return "${" + sampleDataForSimpleType_(sType) + "}";
+    }
+
+    private String sampleDataForSimpleType_(SchemaType sType) {
         // swaRef
         if (sType.getName() != null) {
             if (sType.getName().equals(new QName("http://ws-i.org/profiles/basic/1.1/xsd", "swaRef")))
