@@ -2,10 +2,7 @@ package org.reficio.ws.quickstart;
 
 import javax.jws.WebService;
 import javax.xml.ws.Endpoint;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @WebService
 public class SimpleServer {
@@ -28,6 +25,9 @@ public class SimpleServer {
 
 
     public static class Cat {
+//        public Date dt;
+//        public Double db;
+//        public Long lg;
         public String catName = "tom";
         public HashMap<String, Foot> footMap = new HashMap<String, Foot>();
         public List<Foot> footsList = new ArrayList<Foot>();

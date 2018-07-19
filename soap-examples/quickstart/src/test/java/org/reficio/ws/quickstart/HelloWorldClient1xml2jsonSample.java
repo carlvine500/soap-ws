@@ -77,7 +77,7 @@ public class HelloWorldClient1xml2jsonSample {
                 "      </quic:getCat>\n" +
                 "   </soapenv:Body>\n" +
                 "</soapenv:Envelope>";
-//        JSONObject jsonObject = XmlTool.soapXML2JSON(request);
+//        JSONObject jsonObject = XmlTool.soapXml2Json(request);
 //        System.out.println(JSON.toJSONString(jsonObject, SerializerFeature.PrettyFormat));
 //        XmlObject xmlObject = XmlObject.Factory.parse(request);
 //        XmlCursor xmlCursor = xmlObject.newCursor();

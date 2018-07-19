@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions name="SimpleServerService" targetNamespace="http://quickstart.ws.reficio.org/" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:tns="http://quickstart.ws.reficio.org/" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata">
+  <types>
+    <xsd:schema>
+<xsd:import namespace="http://quickstart.ws.reficio.org/" schemaLocation="http___localhost_8080_HelloWorld_xsd_1"/>
+</xsd:schema>
+  </types>
+  <message name="getCat">
+    <part name="parameters" element="tns:getCat">
+    </part>
+  </message>
+  <message name="echo">
+    <part name="parameters" element="tns:echo">
+    </part>
+  </message>
+  <message name="echoResponse">
+    <part name="parameters" element="tns:echoResponse">
+    </part>
+  </message>
+  <message name="getCatResponse">
+    <part name="parameters" element="tns:getCatResponse">
+    </part>
+  </message>
+  <message name="getList">
+    <part name="parameters" element="tns:getList">
+    </part>
+  </message>
+  <message name="getListResponse">
+    <part name="parameters" element="tns:getListResponse">
+    </part>
+  </message>
+  <portType name="SimpleServer">
+    <operation name="getList">
+      <input message="tns:getList" wsam:Action="http://quickstart.ws.reficio.org/SimpleServer/getListRequest">
+    </input>
+      <output message="tns:getListResponse" wsam:Action="http://quickstart.ws.reficio.org/SimpleServer/getListResponse">
+    </output>
+    </operation>
+    <operation name="getCat">
+      <input message="tns:getCat" wsam:Action="http://quickstart.ws.reficio.org/SimpleServer/getCatRequest">
+    </input>
+      <output message="tns:getCatResponse" wsam:Action="http://quickstart.ws.reficio.org/SimpleServer/getCatResponse">
+    </output>
+    </operation>
+    <operation name="echo">
+      <input message="tns:echo" wsam:Action="http://quickstart.ws.reficio.org/SimpleServer/echoRequest">
+    </input>
+      <output message="tns:echoResponse" wsam:Action="http://quickstart.ws.reficio.org/SimpleServer/echoResponse">
+    </output>
+    </operation>
+  </portType>
+  <binding name="SimpleServerPortBinding" type="tns:SimpleServer">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="getList">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="getCat">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="echo">
+      <soap:operation soapAction=""/>
+      <input>
+        <soap:body use="literal"/>
+      </input>
+      <output>
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="SimpleServerService">
+    <port name="SimpleServerPort" binding="tns:SimpleServerPortBinding">
+      <soap:address location="http://localhost:8080/HelloWorld"/>
+    </port>
+  </service>
+</definitions>
