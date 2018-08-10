@@ -27,7 +27,7 @@ public class SoapUtils_Example {
         System.out.println("requestXmlTemplateAndSample:------------------------------------------------");
         System.out.println(requestXmlTemplateAndSample);
 
-        ElementOccurs elementOccurs = SoapUtils.buildElementOccurs(builder, operation);
+        ElementOccurs elementOccurs = SoapUtils.buildElementOccurs(builder, operation,true);
         JSONObject jsonTemplate = SoapUtils.soapXml2Json(elementOccurs, requestXmlTemplateAndSample);
         jsonTemplate.getJSONObject("Envelope").getJSONObject("Body").getJSONObject("getCat").getJSONObject("arg0").put("catName", "myCatName");
         String requestJson = JSON.toJSONString(jsonTemplate, SerializerFeature.PrettyFormat);

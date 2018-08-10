@@ -39,6 +39,7 @@ import org.reficio.ws.legacy.SoapVersion;
 import org.reficio.ws.legacy.WsdlUtils;
 
 import javax.wsdl.*;
+import javax.wsdl.extensions.ElementExtensible;
 import javax.wsdl.extensions.ExtensibilityElement;
 import javax.wsdl.extensions.soap.SOAPOperation;
 import javax.wsdl.extensions.soap12.SOAP12Operation;
@@ -333,21 +334,20 @@ public class SoapUtils {
         return false;
     }
 
-    public static ElementOccurs buildElementOccurs(SoapBuilder builder, SoapOperation operation) throws XmlException {
+    public static ElementOccurs buildElementOccurs(SoapBuilder builder, SoapOperation operation,boolean isInput) throws XmlException {
         SoapMessageBuilder messageBuilder = builder.getSoapFacade().getMessageBuilder();
         SchemaDefinitionWrapper schemaDefinition = messageBuilder.getSchemaDefinitionWrapper();
         SoapBuilderImpl builderImpl = (SoapBuilderImpl) builder;
         Definition definition = schemaDefinition.getDefinition();
-        SoapVersion soapVersion = messageBuilder.getSoapVersion(builderImpl.getBinding());
         ElementOccurs opCache = new ElementOccurs();
 
         BindingOperation bindingOperation = builderImpl.getBindingOperation(operation);
-        Part[] parts = WsdlUtils.getInputParts(bindingOperation);
+        Part[] parts = isInput ? WsdlUtils.getInputParts(bindingOperation) : WsdlUtils.getOutputParts(bindingOperation);
         for (Part part : parts) {
             processPart(schemaDefinition, part, opCache.getChildren());
         }
 
-        BindingInput bindingInput = bindingOperation.getBindingInput();
+        ElementExtensible bindingInput = isInput ? bindingOperation.getBindingInput() : bindingOperation.getBindingOutput();
         if (bindingInput != null) {
             List<?> extensibilityElements = bindingInput.getExtensibilityElements();
             List<WsdlUtils.SoapHeader> soapHeaders = WsdlUtils.getSoapHeaders(extensibilityElements);

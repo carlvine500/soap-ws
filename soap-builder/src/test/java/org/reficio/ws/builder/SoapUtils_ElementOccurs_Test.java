@@ -28,7 +28,7 @@ public class SoapUtils_ElementOccurs_Test {
                 .find();
         String request = builder.buildInputMessage(operation);
         System.out.println(request);
-        ElementOccurs opCache = SoapUtils.buildElementOccurs(builder, operation);
+        ElementOccurs opCache = SoapUtils.buildElementOccurs(builder, operation,true);
         Assert.assertEquals(Integer.MAX_VALUE, opCache.eval("getCat.arg0.footMap.entry"));
         Assert.assertEquals(Integer.MAX_VALUE, opCache.eval("getCat.arg0.footsList"));
         Assert.assertEquals(Integer.MAX_VALUE, opCache.eval("getCat.arg0.stringList"));
