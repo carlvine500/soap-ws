@@ -14,9 +14,12 @@ import java.net.URL;
  */
 public class HelloWorldClient {
     public static void main(String[] args) throws MalformedURLException, DocumentException {
+//        String spec = "http://localhost:8080/HelloWorld?wsdl";
+//        URL wsdlUrl = new URL(spec);
         String spec = "http://localhost:8080/HelloWorld?wsdl";
         URL wsdlUrl = new URL(spec);
-        Wsdl wsdl = Wsdl.parse(wsdlUrl);
+
+        Wsdl wsdl = Wsdl.parse(wsdlUrl,"ttlsa:123456");
 
 
         SoapBuilder builder = wsdl.binding()
@@ -25,7 +28,7 @@ public class HelloWorldClient {
         SoapOperation operation = builder.operation()
                 .name("getCat")
                 .find();
-
+//        RequestConfig
         String request = builder.buildInputMessage(operation);
         System.out.println("request:\n" + request);
 

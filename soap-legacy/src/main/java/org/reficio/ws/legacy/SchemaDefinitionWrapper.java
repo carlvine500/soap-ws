@@ -61,6 +61,11 @@ public class SchemaDefinitionWrapper {
         loadSchemaTypes(new UrlSchemaLoader(schemaURL));
     }
 
+    public SchemaDefinitionWrapper(Definition definition, String schemaURL,String basicAuth) {
+        this.definition = definition;
+        loadSchemaTypes(new UrlSchemaLoader(schemaURL,basicAuth));
+    }
+
     public SchemaTypeLoader getSchemaTypeLoader() {
         return schemaTypeLoader;
     }

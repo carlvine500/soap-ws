@@ -155,7 +155,7 @@ public final class SoapClient {
                 post.addHeader(PROP_CONTENT_TYPE, contentType);
             }
             return post;
-        } catch (UnsupportedEncodingException ex) {
+        } catch (Exception ex) {
             throw new SoapClientException(ex);
         }
     }

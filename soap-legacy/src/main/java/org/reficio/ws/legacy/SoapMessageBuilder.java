@@ -36,6 +36,7 @@ import javax.wsdl.extensions.soap.SOAPBinding;
 import javax.wsdl.extensions.soap12.SOAP12Binding;
 import javax.wsdl.xml.WSDLReader;
 import javax.xml.namespace.QName;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
@@ -97,6 +98,15 @@ public class SoapMessageBuilder {
         reader.setFeature("javax.wsdl.verbose", false);
         this.definition = reader.readWSDL(wsdlUrl.toString());
         this.definitionWrapper = new SchemaDefinitionWrapper(definition, wsdlUrl.toString());
+    }
+
+    public SoapMessageBuilder(URL wsdlUrl,String basicAuth) throws WSDLException {
+        WSDLReader reader = new WSDLReaderImpl();
+        reader.setFeature("javax.wsdl.verbose", false);
+        String result = HttpClientUtil.httpGetRequestAuth(wsdlUrl.toString(), basicAuth);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(result.getBytes());
+        this.definition = reader.readWSDL(wsdlUrl.toString(),new org.xml.sax.InputSource(byteArrayInputStream));
+        this.definitionWrapper = new SchemaDefinitionWrapper(definition, wsdlUrl.toString(),basicAuth);
     }
 
     /**

@@ -53,9 +53,23 @@ public final class Wsdl {
         }
     }
 
+    private Wsdl(URL wsdlUrl,String basicAuth) {
+        try {
+            this.wsdlUrl = wsdlUrl;
+            this.soapFacade = new SoapLegacyFacade(wsdlUrl,basicAuth);
+        } catch (WSDLException e) {
+            throw new SoapBuilderException(e);
+        }
+    }
+
     public static Wsdl parse(URL wsdlUrl) {
         Preconditions.checkNotNull(wsdlUrl, "URL of the WSDL cannot be null");
         return new Wsdl(wsdlUrl);
+    }
+
+    public static Wsdl parse(URL wsdlUrl,String basicAuth) {
+        Preconditions.checkNotNull(wsdlUrl, "URL of the WSDL cannot be null");
+        return new Wsdl(wsdlUrl,basicAuth);
     }
 
     public static Wsdl parse(String wsdlUrl) {

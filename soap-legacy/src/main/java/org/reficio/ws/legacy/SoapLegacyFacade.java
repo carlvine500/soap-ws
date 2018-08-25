@@ -47,6 +47,10 @@ public class SoapLegacyFacade {
         this.messageBuilder = new SoapMessageBuilder(wsdlUrl);
     }
 
+    public SoapLegacyFacade(URL wsdlUrl,String basicAuth) throws WSDLException {
+        this.messageBuilder = new SoapMessageBuilder(wsdlUrl,basicAuth);
+    }
+
     public String buildSoapMessageFromInput(Binding binding, BindingOperation bindingOperation, SoapContext context) {
         try {
             return messageBuilder.buildSoapMessageFromInput(binding, bindingOperation, context);

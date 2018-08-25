@@ -32,10 +32,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
-import java.io.Writer;
+import java.io.*;
 import java.net.URL;
 import java.util.*;
 
@@ -291,6 +288,14 @@ final class XmlUtils {
     }
 
     public static XmlObject createXmlObject(URL input, XmlOptions xmlOptions) throws XmlException {
+        try {
+            return XmlObject.Factory.parse(input, xmlOptions);
+        } catch (Exception e) {
+            throw new XmlException(e.toString());
+        }
+    }
+
+    public static XmlObject createXmlObject(InputStream input, XmlOptions xmlOptions) throws XmlException {
         try {
             return XmlObject.Factory.parse(input, xmlOptions);
         } catch (Exception e) {

@@ -8,6 +8,19 @@ import java.util.*;
 public class SimpleServer {
     public static void main(String[] args) {
         String url = "http://localhost:8080/HelloWorld?wsdl";
+//        Options opts = sc.getOptions();
+//        opts.setTo(new
+//                EndpointReference("http://192.168.100.108/InspectService/InspectService.asmx"));
+//        HttpTransportProperties.Authenticator basicAuth = new
+//                HttpTransportProperties.Authenticator();
+////		 AuthPolicy.registerAuthScheme(AuthPolicy.NTLM, BackportedNTLMScheme.class);
+//        basicAuth.setUsername("username");
+//        basicAuth.setPassword("password");
+//        List authPrefs = new ArrayList(1);
+//        authPrefs.add(AuthPolicy.NTLM);
+//        basicAuth.setAuthSchemes(authPrefs);
+//        opts.setProperty(HTTPConstants.AUTHENTICATE, basicAuth);
+
         Endpoint.publish(url, new SimpleServer());
     }
 

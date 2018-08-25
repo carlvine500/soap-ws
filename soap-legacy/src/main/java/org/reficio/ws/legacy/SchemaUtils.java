@@ -116,6 +116,16 @@ public class SchemaUtils {
         }
     }
 
+    public static SchemaTypeSystem loadSchemaTypes(String wsdlUrl, SchemaLoader loader,String basicAuth) {
+        try {
+            log.debug("Loading schema types from [" + wsdlUrl + "]");
+            ArrayList<XmlObject> schemas = new ArrayList<XmlObject>(getSchemas(wsdlUrl, loader).values());
+            return buildSchemaTypes(schemas);
+        } catch (Exception e) {
+            throw new SoapBuilderException(e);
+        }
+    }
+
     public static SchemaTypeSystem buildSchemaTypes(List<XmlObject> schemas) {
         XmlOptions options = new XmlOptions();
         options.setCompileNoValidation();

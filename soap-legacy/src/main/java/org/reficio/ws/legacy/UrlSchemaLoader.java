@@ -18,10 +18,12 @@
  */
 package org.reficio.ws.legacy;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.xmlbeans.XmlObject;
 import org.apache.xmlbeans.XmlOptions;
 import org.reficio.ws.SoapBuilderException;
 
+import java.io.ByteArrayInputStream;
 import java.net.URL;
 
 /**
@@ -46,12 +48,23 @@ import java.net.URL;
  */
 public class UrlSchemaLoader implements SchemaLoader, DefinitionLoader {
     private String baseURI;
+    private String basicAuth;
 
     public UrlSchemaLoader(String baseURI) {
         this.baseURI = baseURI;
     }
 
+    public UrlSchemaLoader(String baseURI,String basicAuth) {
+        this.baseURI = baseURI;
+        this.basicAuth = basicAuth;
+    }
+
     public XmlObject loadXmlObject(String wsdlUrl, XmlOptions options) throws Exception {
+        if (StringUtils.isNotBlank(basicAuth)) {
+            String result = HttpClientUtil.httpGetRequestAuth(wsdlUrl.toString(), basicAuth);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(result.getBytes());
+            return XmlUtils.createXmlObject(byteArrayInputStream, options);
+        }
         return XmlUtils.createXmlObject(new URL(wsdlUrl), options);
     }
 
