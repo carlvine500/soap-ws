@@ -22,7 +22,7 @@ package org.reficio.ws.client.core;
  * @author Tom Bujok
  * @since 1.0.0
  */
-final class SoapConstants {
+public final class SoapConstants {
 
     private SoapConstants() {
     }
