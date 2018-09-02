@@ -369,7 +369,8 @@ public class SoapUtils {
         SchemaGlobalElement schemaGlobalElement = schemaDefinition.getSchemaTypeLoader().findElement(type);
         SchemaType stype = schemaGlobalElement.getType();
         ElementOccurs elementOccurs = new ElementOccurs();
-        opCache.put(stype.getName().getLocalPart(), elementOccurs);
+        String localName = stype.getName() == null ? type.getLocalPart() : stype.getName().getLocalPart();
+        opCache.put(localName, elementOccurs);
         processSchemaType(stype, elementOccurs);
     }
 
