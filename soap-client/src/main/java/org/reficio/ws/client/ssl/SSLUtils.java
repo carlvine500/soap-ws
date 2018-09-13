@@ -18,8 +18,9 @@
  */
 package org.reficio.ws.client.ssl;
 
+import org.apache.http.conn.ssl.*;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
+import org.apache.http.ssl.SSLContexts;
 import org.reficio.ws.client.core.Security;
 
 import javax.net.ssl.*;
@@ -79,6 +80,37 @@ public class SSLUtils {
                 security.getKeyStore(), security.getKeyStorePasswordAsString(),
                 security.getTrustStore(), new SecureRandom(), null, verifier);
         return socketFactory;
+    }
+
+    public static SSLConnectionSocketFactory getFactoryNew(Security security) throws GeneralSecurityException {
+        if (security.getKeyStore() == null) {
+            return null;
+        }
+        SSLContext sslContext = SSLContexts.custom()
+                .loadKeyMaterial(security.getKeyStore(),security.getKeyStorePasswordAsString().toCharArray())
+                .loadTrustMaterial(security.getTrustStore(),null)
+                .build();
+        HostnameVerifier hostnameVerifier = security.isStrictHostVerification()? new DefaultHostnameVerifier():NoopHostnameVerifier.INSTANCE;
+        SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(sslContext,hostnameVerifier );
+        return sslConnectionFactory;
+    }
+
+    public static SSLConnectionSocketFactory getMergedSocketFactoryNew(org.reficio.ws.client.core.Security securityOne, Security securityTwo) throws GeneralSecurityException {
+        X509KeyManager keyManagerOne = getKeyManager(securityOne.getKeyStore(), securityOne.getKeyStorePassword());
+        X509KeyManager keyManagerTwo = getKeyManager(securityTwo.getKeyStore(), securityTwo.getKeyStorePassword());
+
+        X509TrustManager trustManager = getMultiTrustManager(
+                getTrustManager(securityOne.getTrustStore()),
+                getTrustManager(securityTwo.getTrustStore())
+        );
+
+        SSLContext context = SSLContext.getInstance(securityOne.getSslContextProtocol());
+        boolean strictHostVerification = securityOne.isStrictHostVerification() && securityTwo.isStrictHostVerification();
+
+        context.init(new KeyManager[]{keyManagerOne, keyManagerTwo}, new TrustManager[]{trustManager}, new SecureRandom());
+        HostnameVerifier hostnameVerifier = securityOne.isStrictHostVerification() ? new DefaultHostnameVerifier() : NoopHostnameVerifier.INSTANCE;
+        SSLConnectionSocketFactory sslConnectionFactory = new SSLConnectionSocketFactory(context, hostnameVerifier);
+        return sslConnectionFactory;
     }
 
 

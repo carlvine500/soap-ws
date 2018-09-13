@@ -1,5 +1,6 @@
 package org.reficio.ws.quickstart;
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.dom4j.DocumentException;
 import org.reficio.ws.builder.SoapBuilder;
 import org.reficio.ws.builder.SoapOperation;
@@ -23,21 +24,23 @@ public class HelloWorldClient {
 
 
         SoapBuilder builder = wsdl.binding()
-                .localPart("SimpleServerPortBinding")
+                .localPart("SimpleServerServiceSoapBinding")
                 .find();
         SoapOperation operation = builder.operation()
-                .name("getCat")
+                .name("getList")
                 .find();
 //        RequestConfig
-        String request = builder.buildInputMessage(operation);
+        final String request = builder.buildInputMessage(operation);
         System.out.println("request:\n" + request);
 
-        SoapClient client = SoapClient.builder()
-                .endpointUri(spec)
-                .build();
-//        request="";
-        String postResult = client.post(request);
-        System.out.println(postResult);
+        final SoapClient client = SoapClient.builder().endpointUri(spec).build();
+        String post = client.post(request);
+        System.out.println(post);
+
+        client.disconnect();
+        SoapClient client1 = SoapClient.builder().endpointUri(spec).build();
+        System.out.println(client1.post(request));
+
     }
 
 

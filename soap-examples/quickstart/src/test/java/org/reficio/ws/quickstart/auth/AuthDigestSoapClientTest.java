@@ -1,21 +1,14 @@
 package org.reficio.ws.quickstart.auth;
 
 import com.sun.xml.internal.messaging.saaj.soap.dynamic.SOAPMessageFactoryDynamicImpl;
-import org.apache.wss4j.dom.engine.WSSConfig;
 import org.reficio.ws.builder.SoapBuilder;
 import org.reficio.ws.builder.SoapOperation;
 import org.reficio.ws.builder.core.Wsdl;
 import org.reficio.ws.client.core.SoapClient;
-import org.reficio.ws.legacy.SoapMessageBuilder;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.ws.context.DefaultMessageContext;
-import org.springframework.ws.context.MessageContext;
 import org.springframework.ws.soap.saaj.SaajSoapMessage;
 import org.springframework.ws.soap.saaj.SaajSoapMessageFactory;
 import org.springframework.ws.soap.security.wss4j2.Wss4jSecurityInterceptor;
-import org.springframework.ws.soap.security.xwss.XwsSecurityInterceptor;
-import org.springframework.ws.soap.security.xwss.callback.SimplePasswordValidationCallbackHandler;
-import sun.misc.BASE64Encoder;
 
 import javax.xml.soap.*;
 import java.io.ByteArrayInputStream;
@@ -23,13 +16,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.Charset;
-import java.security.MessageDigest;
-import java.security.SecureRandom;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.TimeZone;
 
 /**
  * Created by tingfeng on 2018/6/25.
@@ -54,7 +40,7 @@ public class AuthDigestSoapClientTest {
         String request = builder.buildInputMessage(operation);
         System.out.println("request:\n" + request);
 //        SoapMessageBuilder.getSoapVersion(bin)
-        SOAPMessage soapMessage = getSoapMessageFromString(request);
+        SOAPMessage soapMessage = convertXml2SoapMessage(request);
 //        addHeader(soapMessage);
 
         Wss4jSecurityInterceptor interceptor = new Wss4jSecurityInterceptor();
@@ -63,30 +49,36 @@ public class AuthDigestSoapClientTest {
 //        interceptor.setSecurementPasswordType("PasswordDigest");
         interceptor.setSecurementUsername("kevin");
         interceptor.setSecurementPassword("111111");
-//        interceptor.setSecurementUsernameTokenNonce();
+        interceptor.setSecurementUsernameTokenNonce(false);
+        interceptor.setSecurementUsernameTokenCreated(false);
 //        interceptor.setSecurementSignatureKeyIdentifier();
 //        interceptor.setSecurementSignatureAlgorithm();
 //        interceptor.setSecurementSignatureDigestAlgorithm();
 
-        SaajSoapMessageFactory messageFactory = new SaajSoapMessageFactory();
-        SaajSoapMessage saajSoapMessage = new SaajSoapMessage(soapMessage, new SOAPMessageFactoryDynamicImpl());
-        interceptor.handleRequest(new DefaultMessageContext(saajSoapMessage, messageFactory));
+
+
         SoapClient client = SoapClient.builder()
                 .endpointUri(spec)/*.endpointSecurity(ttlsa)*/
                 .build();
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        saajSoapMessage.getSaajMessage().writeTo(out);
-        request = new String(out.toByteArray());
+        SaajSoapMessageFactory messageFactory = new SaajSoapMessageFactory();
+        SaajSoapMessage saajSoapMessage = new SaajSoapMessage(soapMessage, new SOAPMessageFactoryDynamicImpl());
+        interceptor.handleRequest(new DefaultMessageContext(saajSoapMessage, messageFactory));
+        request = convertSaajSoapMessage2String(saajSoapMessage);
         System.out.println("request(header):\n" + request);
 //        request="";
         String postResult = client.post(request);
         System.out.println(postResult);
 
+//        org.dom4j.Document dom4jDoc = DocumentHelper.createDocument();
+//        org.w3c.dom.Document w3cDoc = new DOMWriter().write(dom4jDoc)
+
 
     }
 
-    private static SOAPMessage getSoapMessageFromString(String xml) throws SOAPException, IOException {
+
+
+    private static SOAPMessage convertXml2SoapMessage(String xml) throws SOAPException, IOException {
         String protocol = xml.contains(org.reficio.ws.client.core.SoapConstants.SOAP_1_1_NAMESPACE) ?
                 SOAPConstants.SOAP_1_1_PROTOCOL : SOAPConstants.SOAP_1_2_PROTOCOL;
         MessageFactory factory = MessageFactory.newInstance(protocol);
@@ -94,6 +86,11 @@ public class AuthDigestSoapClientTest {
         return message;
     }
 
+    private static String convertSaajSoapMessage2String(SaajSoapMessage saajSoapMessage) throws IOException, SOAPException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        saajSoapMessage.getSaajMessage().writeTo(out);
+        return new String(out.toByteArray());
+    }
 //    private static void addHeader(SOAPMessage soapMessage) {
 //        {
 //            try {

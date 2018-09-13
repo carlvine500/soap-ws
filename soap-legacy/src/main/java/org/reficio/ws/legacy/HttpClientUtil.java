@@ -347,7 +347,7 @@ public class HttpClientUtil {
     }
 
     public static CloseableHttpClient getHttpClientBasicAuth(String basicAuth) {
-        HttpClientBuilder httpClientBuilder = HttpClientBuilder.create();
+        HttpClientBuilder httpClientBuilder = HttpClients.custom().setConnectionManager(HttpConnectionManager.POOLING_CONNECTION_MANAGER);
         CredentialsProvider provider = new BasicCredentialsProvider();
         AuthScope scope = new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT, AuthScope.ANY_REALM);
         String[] basicAuthArr = StringUtils.split(basicAuth, ":");

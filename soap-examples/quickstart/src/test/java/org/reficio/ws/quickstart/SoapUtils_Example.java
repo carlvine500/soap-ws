@@ -1,4 +1,4 @@
-package com.bizcloud.ipaas.quickstart.util;
+package org.reficio.ws.quickstart;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -10,6 +10,7 @@ import org.reficio.ws.builder.SoapOperation;
 import org.reficio.ws.builder.core.ElementOccurs;
 import org.reficio.ws.builder.core.SoapUtils;
 import org.reficio.ws.builder.core.Wsdl;
+import org.reficio.ws.client.core.Security;
 import org.reficio.ws.client.core.SoapClient;
 
 import javax.xml.namespace.QName;
@@ -42,6 +43,7 @@ public class SoapUtils_Example {
                 String requestXml = SoapUtils.soapJson2Xml(requestXmlTemplateAndSample, jsonTemplate.toJSONString(), true);
                 SoapClient client = SoapClient.builder()
                         .endpointUri(serviceUrls.get(0))
+                        .endpointSecurity(Security.builder().build())
                         .build();
                 String postResult = client.post(requestXml);
                 System.out.println("postResult=\n"+postResult);

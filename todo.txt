@@ -1,0 +1,23 @@
+concurrentTest; x
+https test;x
+keystore test; TODO
+simple basicAuth test;x
+other port 8443 : https://localhost:8443/HelloWorld?wsdl;x
+
+#########nginx 配置##############################################
+    server {
+         #listen 80;
+         listen 8443 ssl;
+           ssl_certificate /usr/local/etc/nginx/nginx.crt;
+           ssl_certificate_key /usr/local/etc/nginx/nginx.key;
+           ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+           ssl_ciphers HIGH:!aNULL:!MD5;
+
+           server_name localhost;
+                  auth_basic "Restricted";
+                  auth_basic_user_file /Users/tingfeng/nginx.pass;
+                  location / {
+                      #return 200 "ok1";
+                      proxy_pass http://localhost:8080;
+           }
+    }

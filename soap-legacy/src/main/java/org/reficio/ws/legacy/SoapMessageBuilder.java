@@ -96,7 +96,9 @@ public class SoapMessageBuilder {
     public SoapMessageBuilder(URL wsdlUrl) throws WSDLException {
         WSDLReader reader = new WSDLReaderImpl();
         reader.setFeature("javax.wsdl.verbose", false);
-        this.definition = reader.readWSDL(wsdlUrl.toString());
+        String result = HttpClientUtil.httpGetRequest(wsdlUrl.toString());
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(result.getBytes());
+        this.definition = reader.readWSDL(wsdlUrl.toString(),new org.xml.sax.InputSource(byteArrayInputStream));
         this.definitionWrapper = new SchemaDefinitionWrapper(definition, wsdlUrl.toString());
     }
 
