@@ -42,10 +42,10 @@ public class WsdlHttpBasicAuthTest {
         System.out.println(JSON.toJSONString(wsdl.getBindings(), SerializerFeature.PrettyFormat));
 
         SoapBuilder builder = wsdl.binding()
-                .localPart("SimpleServerServiceSoapBinding")
+                .localPart("HelloWorldSoapBinding")
                 .find();
         SoapOperation operation = builder.operation()
-                .name("getList")
+                .name("echo")
                 .find();
 //        RequestConfig
         final String request = builder.buildInputMessage(operation);

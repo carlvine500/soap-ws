@@ -29,9 +29,9 @@ import javax.wsdl.xml.WSDLReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -194,7 +194,8 @@ public class HttpClientUtil {
     }
 
     public static String httpPostRequest(String url, Map<String, Object> params) {
-        return httpPostRequest(url, params, null);
+        Map<String, Object> emptyMap = Collections.emptyMap();
+        return httpPostRequest(url, emptyMap, params);
     }
 
     /**

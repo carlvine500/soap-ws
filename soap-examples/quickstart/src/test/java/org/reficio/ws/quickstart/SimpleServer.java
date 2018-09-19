@@ -7,7 +7,7 @@ import java.util.*;
 @WebService
 public class SimpleServer {
     public static void main(String[] args) {
-        String url = "http://localhost:8080/HelloWorld?wsdl";
+        String url = "http://localhost:8081/HelloWorld?wsdl";
 //        Options opts = sc.getOptions();
 //        opts.setTo(new
 //                EndpointReference("http://192.168.100.108/InspectService/InspectService.asmx"));

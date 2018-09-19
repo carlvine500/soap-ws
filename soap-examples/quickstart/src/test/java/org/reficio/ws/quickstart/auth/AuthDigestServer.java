@@ -40,10 +40,10 @@ public class AuthDigestServer {
         inProps.put(WSHandlerConstants.ACTION,
                 WSHandlerConstants.USERNAME_TOKEN);
 //        inProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_DIGEST);
-        inProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
-        inProps.put(WSHandlerConstants.PW_CALLBACK_CLASS,
-                ServerPasswordHandler.class.getName());
-        cxfEndpoint.getInInterceptors().add(new WSS4JInInterceptor(inProps));
+//        inProps.put(WSHandlerConstants.PASSWORD_TYPE, WSConstants.PW_TEXT);
+//        inProps.put(WSHandlerConstants.PW_CALLBACK_CLASS,
+//                ServerPasswordHandler.class.getName());
+//        cxfEndpoint.getInInterceptors().add(new WSS4JInInterceptor(inProps));
 
     }
 
