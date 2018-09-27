@@ -30,10 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * httpclient 调用工具
@@ -188,7 +185,8 @@ public class HttpClientUtil {
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
         } catch (UnsupportedEncodingException e) {
-            logger.error("",e);;
+            logger.error("", e);
+            ;
         }
         return execute(httpPost, basicAuth);
     }
@@ -216,7 +214,8 @@ public class HttpClientUtil {
         try {
             httpPost.setEntity(new UrlEncodedFormEntity(pairs, UTF_8));
         } catch (UnsupportedEncodingException e) {
-            logger.error("",e);;
+            logger.error("", e);
+            ;
         }
         return execute(httpPost, basicAuth);
     }
@@ -243,7 +242,8 @@ public class HttpClientUtil {
         try {
             httpPost.setEntity(new StringEntity(json, UTF_8));
         } catch (UnsupportedCharsetException e) {
-            logger.error("",e);;
+            logger.error("", e);
+            ;
         }
         return execute(httpPost, basicAuth);
     }
@@ -275,20 +275,31 @@ public class HttpClientUtil {
     private static String execute(HttpRequestBase request, String basicAuth) {
         String result = EMPTY_STR;
         request.setConfig(createConfig(TIMEOUT, IS_REDIRECTS));
-        CloseableHttpClient httpClient = basicAuth == null ? getHttpClient() : getHttpClientBasicAuth(basicAuth);
+//        CloseableHttpClient httpClient = basicAuth == null ? getHttpClient() : getHttpClientBasicAuth(basicAuth);
+        CloseableHttpClient httpClient = getHttpClient();
         try {
+            if (basicAuth != null) {
+                String[] basicAuthArr = StringUtils.split(basicAuth, ":");
+                addAuthHeader(request, basicAuthArr[0], basicAuthArr[1]);
+            }
             CloseableHttpResponse response = httpClient.execute(request);
+            response = httpClient.execute(request);
             if (isRedirected(response)) {
                 result = getRedirectedUrl(response);
             } else {
                 result = getEntityData(response);
             }
         } catch (ClientProtocolException e) {
-            logger.error("",e);;
+            logger.error("", e);
         } catch (IOException e) {
-            logger.error("",e);;
+            logger.error("", e);
         }
         return result;
+    }
+
+    private static void addAuthHeader(HttpRequestBase http, String username, String password) throws UnsupportedEncodingException {
+        String encoded = Base64.getEncoder().encodeToString((username + ":" + password).getBytes("UTF-8"));
+        http.addHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoded);
     }
 
     public static void main(String[] args) throws WSDLException {
@@ -313,9 +324,11 @@ public class HttpClientUtil {
                             url,
                             inputSource);
         } catch (ClientProtocolException e) {
-            logger.error("",e);;
+            logger.error("", e);
+            ;
         } catch (IOException e) {
-            logger.error("",e);;
+            logger.error("", e);
+            ;
         }
     }
 
