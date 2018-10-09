@@ -283,7 +283,7 @@ public class HttpClientUtil {
                 addAuthHeader(request, basicAuthArr[0], basicAuthArr[1]);
             }
             CloseableHttpResponse response = httpClient.execute(request);
-            response = httpClient.execute(request);
+//            response = httpClient.execute(request);
             if (isRedirected(response)) {
                 result = getRedirectedUrl(response);
             } else {
