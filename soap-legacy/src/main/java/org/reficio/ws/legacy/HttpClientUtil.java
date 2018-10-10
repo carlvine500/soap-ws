@@ -1,6 +1,5 @@
 package org.reficio.ws.legacy;
 
-import com.ibm.wsdl.xml.WSDLReaderImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
@@ -21,13 +20,8 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
-import org.xml.sax.InputSource;
 
-import javax.wsdl.Definition;
-import javax.wsdl.WSDLException;
-import javax.wsdl.xml.WSDLReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.*;
@@ -302,35 +296,35 @@ public class HttpClientUtil {
         http.addHeader(HttpHeaders.AUTHORIZATION, "Basic " + encoded);
     }
 
-    public static void main(String[] args) throws WSDLException {
-
-        String url = new String("http://localhost/HelloWorld?wsdl");
-        HttpGet request = new HttpGet(url);
-        String result = EMPTY_STR;
-        request.setConfig(createConfig(TIMEOUT, IS_REDIRECTS));
-        CloseableHttpClient httpClient = getHttpClientBasicAuth("ttlsa:123456");
-        try {
-            CloseableHttpResponse response = httpClient.execute(request);
-//            if (isRedirected(response)) {
-//                result = getRedirectedUrl(response);
-//            } else {
-//                result = getEntityData(response);
-//            }
-            InputStream content = response.getEntity().getContent();
-            InputSource inputSource = new InputSource(content);
-            WSDLReader reader = new WSDLReaderImpl();
-            Definition definition =
-                    reader.readWSDL(
-                            url,
-                            inputSource);
-        } catch (ClientProtocolException e) {
-            logger.error("", e);
-            ;
-        } catch (IOException e) {
-            logger.error("", e);
-            ;
-        }
-    }
+//    public static void main(String[] args) throws WSDLException {
+//
+//        String url = new String("http://localhost/HelloWorld?wsdl");
+//        HttpGet request = new HttpGet(url);
+//        String result = EMPTY_STR;
+//        request.setConfig(createConfig(TIMEOUT, IS_REDIRECTS));
+//        CloseableHttpClient httpClient = getHttpClientBasicAuth("ttlsa:123456");
+//        try {
+//            CloseableHttpResponse response = httpClient.execute(request);
+////            if (isRedirected(response)) {
+////                result = getRedirectedUrl(response);
+////            } else {
+////                result = getEntityData(response);
+////            }
+//            InputStream content = response.getEntity().getContent();
+//            InputSource inputSource = new InputSource(content);
+//            WSDLReader reader = new WSDLReaderImpl();
+//            Definition definition =
+//                    reader.readWSDL(
+//                            url,
+//                            inputSource);
+//        } catch (ClientProtocolException e) {
+//            logger.error("", e);
+//            ;
+//        } catch (IOException e) {
+//            logger.error("", e);
+//            ;
+//        }
+//    }
 
     /**
      * 创建HTTP请求配置
