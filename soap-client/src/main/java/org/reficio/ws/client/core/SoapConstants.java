@@ -42,7 +42,7 @@ public final class SoapConstants {
     public final static String
             MIMETYPE_TEXT_HTML = "text/html",
             MIMETYPE_TEXT_PLAIN = "text/plain",
-            MIMETYPE_TEXT_XML = "text/xml",
+            MIMETYPE_TEXT_XML = "text/xml;charset=UTF-8",
             MIMETYPE_APPLICATION_XML = "application/soap+xml";
 
     public final static String

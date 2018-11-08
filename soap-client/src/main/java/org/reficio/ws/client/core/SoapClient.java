@@ -164,7 +164,7 @@ public final class SoapClient {
                 post.addHeader(PROP_SOAP_ACTION_11, soapAction);
                 post.addHeader(PROP_CONTENT_TYPE, MIMETYPE_TEXT_XML);
 //                client.getParams().setParameter(PROP_CONTENT_TYPE, MIMETYPE_TEXT_XML);
-                post.addHeader(PROP_CONTENT_TYPE, MIMETYPE_TEXT_XML);
+//                post.addHeader(PROP_CONTENT_TYPE, MIMETYPE_TEXT_XML);
             } else if (requestEnvelope.contains(SOAP_1_2_NAMESPACE)) {
                 String contentType = MIMETYPE_APPLICATION_XML;
                 if (soapAction != null) {
@@ -188,11 +188,12 @@ public final class SoapClient {
             HttpResponse response = client.execute(post, httpClientContext);
             StatusLine statusLine = response.getStatusLine();
             HttpEntity entity = response.getEntity();
+            String result = entity == null ? null : EntityUtils.toString(entity);
             if (statusLine.getStatusCode() >= 300) {
-                EntityUtils.consume(entity);
-                throw new TransmissionException(statusLine.getReasonPhrase(), statusLine.getStatusCode());
+//                EntityUtils.consume(entity);
+                throw new TransmissionException(statusLine.getReasonPhrase() + ",result=" + result, statusLine.getStatusCode());
             }
-            return entity == null ? null : EntityUtils.toString(entity);
+            return result;
         } catch (SoapException ex) {
             throw ex;
         } catch (ConnectTimeoutException ex) {
