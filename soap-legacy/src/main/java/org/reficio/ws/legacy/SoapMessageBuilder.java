@@ -19,6 +19,7 @@
 package org.reficio.ws.legacy;
 
 import com.ibm.wsdl.xml.WSDLReaderImpl;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.xmlbeans.SchemaGlobalElement;
 import org.apache.xmlbeans.SchemaType;
@@ -96,18 +97,26 @@ public class SoapMessageBuilder {
     public SoapMessageBuilder(URL wsdlUrl) throws WSDLException {
         WSDLReader reader = new WSDLReaderImpl();
         reader.setFeature("javax.wsdl.verbose", false);
-        String result = HttpClientUtil.httpGetRequest(wsdlUrl.toString());
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(result.getBytes());
-        this.definition = reader.readWSDL(wsdlUrl.toString(),new org.xml.sax.InputSource(byteArrayInputStream));
+        if(StringUtils.equals(wsdlUrl.getProtocol(),"http")){
+            String result = HttpClientUtil.httpGetRequest(wsdlUrl.toString());
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(result.getBytes());
+            this.definition = reader.readWSDL(wsdlUrl.toString(),new org.xml.sax.InputSource(byteArrayInputStream));
+        }else{
+            this.definition = reader.readWSDL(wsdlUrl.toString());
+        }
         this.definitionWrapper = new SchemaDefinitionWrapper(definition, wsdlUrl.toString());
     }
 
     public SoapMessageBuilder(URL wsdlUrl,String basicAuth) throws WSDLException {
         WSDLReader reader = new WSDLReaderImpl();
         reader.setFeature("javax.wsdl.verbose", false);
-        String result = HttpClientUtil.httpGetRequestAuth(wsdlUrl.toString(), basicAuth);
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(result.getBytes());
-        this.definition = reader.readWSDL(wsdlUrl.toString(),new org.xml.sax.InputSource(byteArrayInputStream));
+        if (StringUtils.equals(wsdlUrl.getProtocol(), "http")) {
+            String result = HttpClientUtil.httpGetRequestAuth(wsdlUrl.toString(), basicAuth);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(result.getBytes());
+            this.definition = reader.readWSDL(wsdlUrl.toString(), new org.xml.sax.InputSource(byteArrayInputStream));
+        } else {
+            this.definition = reader.readWSDL(wsdlUrl.toString());
+        }
         this.definitionWrapper = new SchemaDefinitionWrapper(definition, wsdlUrl.toString(),basicAuth);
     }
 

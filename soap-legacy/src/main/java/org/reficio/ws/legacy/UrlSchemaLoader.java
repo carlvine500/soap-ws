@@ -65,11 +65,14 @@ public class UrlSchemaLoader implements SchemaLoader, DefinitionLoader {
 //            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(result.getBytes());
 //            return XmlUtils.createXmlObject(byteArrayInputStream, options);
 //        }
-        String result =StringUtils.isNotBlank(basicAuth)?
-                HttpClientUtil.httpGetRequestAuth(wsdlUrl.toString(), basicAuth):
-                HttpClientUtil.httpGetRequest(wsdlUrl.toString());
-        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(result.getBytes());
-        return XmlUtils.createXmlObject(byteArrayInputStream, options);
+        if (StringUtils.startsWith(wsdlUrl, "http")) {
+            String result = StringUtils.isNotBlank(basicAuth) ?
+                    HttpClientUtil.httpGetRequestAuth(wsdlUrl.toString(), basicAuth) :
+                    HttpClientUtil.httpGetRequest(wsdlUrl.toString());
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(result.getBytes());
+            return XmlUtils.createXmlObject(byteArrayInputStream, options);
+        }
+        return XmlUtils.createXmlObject(new URL(wsdlUrl), options);
     }
 
     public String getBaseURI() {
