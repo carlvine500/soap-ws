@@ -87,6 +87,10 @@ public class SoapUtils {
         return SoapOperationImpl.create(builder, binding, operation, soapAction);
     }
 
+    public static String jsonReplaceXml(String xmlTemplate, String json) throws DocumentException {
+        return soapJson2Xml(xmlTemplate, json, false);
+    }
+
     public static String soapJson2Xml(String xmlTemplate, String json) throws DocumentException {
         return soapJson2Xml(xmlTemplate, json, false);
     }
@@ -130,7 +134,8 @@ public class SoapUtils {
 
     public static void replaceTemplateWithJson(Document doc, JSONObject jsonObject) {
         Element envelopeElement = doc.getRootElement();
-        walkXmlJson(envelopeElement, jsonObject.getJSONObject("Envelope"));
+//        walkXmlJson(envelopeElement, jsonObject.getJSONObject("Envelope"));
+        walkXmlJson(envelopeElement, (JSON)jsonObject.values().iterator().next());
         clearEmptyElement(doc.getRootElement());
     }
 
